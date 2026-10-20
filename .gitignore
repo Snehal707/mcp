@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+mcp/node_modules/
+
+# Build output
+dist/
+
+# Environment / secrets — NEVER commit these
+.env
+.env.*
+!.env.example
+!mcp/env.example.txt
+mcp/.env
+
+# Circle / Arc sensitive files
+.circle/recovery_file*.dat
+**/recovery_file*.dat
+
+# Runtime data files (generated, not source)
+tool-calls.jsonl
+agent-clients.json
+agent-grants.json
+kill-switch.json
+console.jsonl
+traces.jsonl
+
+# Foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+
+# Editor / OS
+.DS_Store
+*.swp
+.vscode/
