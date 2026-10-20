@@ -1,19 +1,29 @@
 /**
  * MCP Tool: transfer_usdc
  *
- * Transfer USDC to a recipient on Arc, with three spending-limit guardrails:
- *   1. Per-call cap
- *   2. Daily rolling limit
- *   3. Address allowlist
+ * Transfer USDC to a recipient on Arc. Phase 0 guard order:
+ *   1. Kill switch     — KILL_SWITCH=true blocks immediately
+ *   2. Address allowlist — REQUIRE_ALLOWLIST=true (default) rejects empty list
+ *   3. Per-call cap    — amount <= PER_CALL_LIMIT_USDC
+ *   4. Daily rolling   — cumulative 24h spend <= DAILY_LIMIT_USDC
+ *   5. Operation binding — keccak256 payload hash stamped on every log entry
  *
- * Two execution modes via AGENT_MODE env var:
+ * Two execution modes via AGENT_MODE:
  *   "circle"   — Circle Developer-Controlled Wallets API (no key on server)
  *   "unsigned" — Returns an unsigned tx object for the human operator to sign
  */
 import { z } from 'zod';
 import { isAddress } from 'viem';
 import { parseUsdc } from '../arc-chain.js';
-import { checkLimits, SpendingLimitError, appendLog } from '../spending-limits.js';
+import {
+  isKillSwitchActive,
+  checkAddressAllowlist,
+  checkLimits,
+  createOperationBinding,
+  SpendingLimitError,
+  appendLog,
+  type OperationBinding,
+} from '../spending-limits.js';
 import * as circleWallet from '../circle-wallet.js';
 import { estimateGas, buildUsdcTransfer } from '../unsigned-tx.js';
 
@@ -21,7 +31,8 @@ export const name = 'transfer_usdc';
 
 export const description =
   'Transfer USDC to a recipient address on Arc. ' +
-  'Enforces spending limits: per-call cap, 24-hour rolling total, and address allowlist. ' +
+  'Phase 0 guards: kill switch, address allowlist (REQUIRE_ALLOWLIST=true by default), ' +
+  'per-call cap, 24-hour rolling daily limit, and operation binding (keccak256 payload hash in log). ' +
   'In "circle" mode the server signs via Circle Developer-Controlled Wallets and ' +
   'returns a transaction hash. In "unsigned" mode the server returns a ready-to-sign ' +
   'transaction object — the human operator must sign and broadcast it. ' +
@@ -48,8 +59,31 @@ export const inputSchema = z.object({
 
 export type Input = z.infer<typeof inputSchema>;
 
+/** Serialise only the fields the agent needs to see from a binding. */
+function bindingSummary(b: OperationBinding) {
+  return { hash: b.hash, nonce: b.nonce, timestamp: b.timestamp };
+}
+
 export async function handler(input: Input): Promise<string> {
   const ts = new Date().toISOString();
+
+  // ── 1. Kill switch ────────────────────────────────────────────────────────
+  if (isKillSwitchActive()) {
+    appendLog({
+      timestamp: ts,
+      tool: name,
+      to: input.to,
+      amountUsdc: input.amount,
+      status: 'blocked',
+      limitCode: 'KILL_SWITCH_ACTIVE',
+      memo: input.memo,
+    });
+    return JSON.stringify({
+      success: false,
+      error: 'Kill switch is active. All write operations are blocked. Set KILL_SWITCH=false to re-enable.',
+      limitViolation: 'KILL_SWITCH_ACTIVE',
+    });
+  }
 
   // ── Input validation ──────────────────────────────────────────────────────
   if (!isAddress(input.to)) {
@@ -67,9 +101,10 @@ export async function handler(input: Input): Promise<string> {
   const amountRaw = parseUsdc(amountStr);
   const to = input.to as `0x${string}`;
 
-  // ── Spending-limit check ──────────────────────────────────────────────────
+  // ── 2. Address allowlist + 3-4. Spending limits ───────────────────────────
   try {
-    checkLimits(to, amountRaw);
+    checkAddressAllowlist(to);
+    checkLimits(amountRaw);
   } catch (err) {
     if (err instanceof SpendingLimitError) {
       appendLog({
@@ -81,7 +116,6 @@ export async function handler(input: Input): Promise<string> {
         limitCode: err.code,
         memo: input.memo,
       });
-      // Return structured error, not a thrown exception, so the agent can read the reason
       return JSON.stringify({
         success: false,
         error: err.message,
@@ -90,6 +124,12 @@ export async function handler(input: Input): Promise<string> {
     }
     throw err;
   }
+
+  // ── 5. Operation binding ──────────────────────────────────────────────────
+  // For a USDC ERC-20 transfer the calldata is the encoded transfer(address,uint256).
+  // We bind to '0x' here because we have not yet encoded it; the unsigned-tx builder
+  // will include the real calldata in the returned tx object.
+  const binding = createOperationBinding(to, amountRaw, '0x');
 
   const mode = (process.env.AGENT_MODE ?? 'unsigned').toLowerCase();
 
@@ -103,6 +143,7 @@ export async function handler(input: Input): Promise<string> {
       status: 'approved',
       mode: 'circle',
       memo: input.memo,
+      binding,
     });
 
     const result = await circleWallet.sendUsdc(to, amountRaw.toString());
@@ -117,6 +158,7 @@ export async function handler(input: Input): Promise<string> {
       txHash: result.txHash ?? undefined,
       circleTransactionId: result.circleTransactionId,
       memo: input.memo,
+      binding,
     });
 
     return JSON.stringify({
@@ -128,12 +170,13 @@ export async function handler(input: Input): Promise<string> {
       txHash: result.txHash,
       state: result.state,
       explorerUrl: result.explorerUrl,
+      binding: bindingSummary(binding),
     });
   }
 
   // ── Unsigned mode (default) ───────────────────────────────────────────────
   const tx = buildUsdcTransfer(to, amountStr);
-  const estimatedGas = await estimateGas(tx.to, tx.data, BigInt(tx.value === '0x0' ? 0 : 0));
+  const estimatedGas = await estimateGas(tx.to, tx.data, 0n);
 
   appendLog({
     timestamp: ts,
@@ -143,6 +186,7 @@ export async function handler(input: Input): Promise<string> {
     status: 'approved',
     mode: 'unsigned',
     memo: input.memo,
+    binding,
   });
 
   return JSON.stringify({
@@ -152,6 +196,7 @@ export async function handler(input: Input): Promise<string> {
     amountUsdc: amountStr,
     unsignedTransaction: tx,
     estimatedGasUsdc: estimatedGas,
+    binding: bindingSummary(binding),
     instructions:
       'This transaction has NOT been sent. Sign and broadcast it with MetaMask, ' +
       'Frame, Rainbow, or the cast CLI. Once broadcast, pass the tx hash to ' +

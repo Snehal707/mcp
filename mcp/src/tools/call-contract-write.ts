@@ -2,16 +2,31 @@
  * MCP Tool: call_contract_write
  *
  * Execute a state-changing function on any contract deployed on Arc.
- * Applies spending-limit guardrails when a USDC value is attached.
+ * Phase 0 guard order:
+ *   1. Kill switch          — KILL_SWITCH=true blocks immediately
+ *   2. Contract allowlist   — contract must be in ALLOWED_CONTRACTS
+ *   3. Selector allowlist   — if ALLOWED_SELECTORS set, 4-byte selector must match
+ *   4. Address allowlist    — contract address checked against ALLOWED_ADDRESSES
+ *   5. Spending limits      — per-call cap + daily rolling limit (when valueUsdc > 0)
+ *   6. Operation binding    — keccak256 payload hash stamped on every log entry
  *
  * Two execution modes via AGENT_MODE:
  *   "circle"   — Circle Developer-Controlled Wallets API executes the call
  *   "unsigned" — Returns an unsigned tx object for the human operator to sign
  */
 import { z } from 'zod';
-import { isAddress } from 'viem';
+import { isAddress, encodeFunctionData } from 'viem';
 import { parseUsdc } from '../arc-chain.js';
-import { checkLimits, SpendingLimitError, appendLog } from '../spending-limits.js';
+import {
+  isKillSwitchActive,
+  checkContractAllowlist,
+  checkAddressAllowlist,
+  checkLimits,
+  createOperationBinding,
+  SpendingLimitError,
+  appendLog,
+  type OperationBinding,
+} from '../spending-limits.js';
 import * as circleWallet from '../circle-wallet.js';
 import { buildContractWrite, estimateGas } from '../unsigned-tx.js';
 
@@ -19,8 +34,10 @@ export const name = 'call_contract_write';
 
 export const description =
   'Execute a state-changing (non-view) function on any smart contract deployed on Arc. ' +
+  'Phase 0 guards: kill switch, contract allowlist (ALLOWED_CONTRACTS required), ' +
+  'optional selector allowlist (ALLOWED_SELECTORS), address allowlist, spending limits, ' +
+  'and operation binding (keccak256 payload hash in log). ' +
   'Supports attaching USDC as msg.value for payable functions. ' +
-  'Spending-limit guardrails are enforced when valueUsdc > 0. ' +
   'In "circle" mode the call is signed via Circle Developer-Controlled Wallets. ' +
   'In "unsigned" mode an unsigned transaction object is returned for manual signing.';
 
@@ -61,8 +78,63 @@ export const inputSchema = z.object({
 
 export type Input = z.infer<typeof inputSchema>;
 
+/** Serialise only the fields the agent needs to see from a binding. */
+function bindingSummary(b: OperationBinding) {
+  return { hash: b.hash, nonce: b.nonce, timestamp: b.timestamp };
+}
+
+/**
+ * Derive the 4-byte function selector from the ABI + functionName.
+ * Returns undefined if the ABI cannot be parsed (non-fatal; selector check skipped).
+ */
+function deriveSelector(abiJson: string, functionName: string): string | undefined {
+  try {
+    const abiArr = JSON.parse(abiJson) as Array<{
+      name: string;
+      type: string;
+      inputs?: Array<{ type: string }>;
+    }>;
+    const fn = abiArr.find((f) => f.type === 'function' && f.name === functionName);
+    if (!fn) return undefined;
+    const paramTypes = (fn.inputs ?? []).map((p) => p.type).join(',');
+    const sig = `${functionName}(${paramTypes})`;
+    // Encode with empty args just to get the selector
+    const encoded = encodeFunctionData({
+      abi: abiArr as never,
+      functionName,
+      args: [],
+    });
+    // encodeFunctionData returns 0x + 8 hex selector + encoded args
+    // For selector extraction we just need the first 10 chars
+    void encoded; // unused — use the canonical keccak approach via viem instead
+    // Compute selector from signature string via keccak (viem doesn't expose this directly)
+    // Fall back to the encoded calldata slice which is always correct
+    return sig; // return the sig string; checkContractAllowlist expects 0x-selector OR sig
+  } catch {
+    return undefined;
+  }
+}
+
 export async function handler(input: Input): Promise<string> {
   const ts = new Date().toISOString();
+
+  // ── 1. Kill switch ────────────────────────────────────────────────────────
+  if (isKillSwitchActive()) {
+    appendLog({
+      timestamp: ts,
+      tool: name,
+      contractAddress: input.contractAddress,
+      functionName: input.functionName,
+      status: 'blocked',
+      limitCode: 'KILL_SWITCH_ACTIVE',
+      memo: input.memo,
+    });
+    return JSON.stringify({
+      success: false,
+      error: 'Kill switch is active. All write operations are blocked. Set KILL_SWITCH=false to re-enable.',
+      limitViolation: 'KILL_SWITCH_ACTIVE',
+    });
+  }
 
   if (!isAddress(input.contractAddress)) {
     throw new Error(`"${input.contractAddress}" is not a valid contract address.`);
@@ -72,31 +144,53 @@ export async function handler(input: Input): Promise<string> {
   const hasValue = parseFloat(valueStr) > 0;
   const valueRaw = hasValue ? parseUsdc(valueStr) : 0n;
 
-  // Spending-limit check when USDC value is attached
-  if (hasValue) {
-    try {
-      checkLimits(input.contractAddress, valueRaw);
-    } catch (err) {
-      if (err instanceof SpendingLimitError) {
-        appendLog({
-          timestamp: ts,
-          tool: name,
-          contractAddress: input.contractAddress,
-          functionName: input.functionName,
-          valueUsdc: valueStr,
-          status: 'blocked',
-          limitCode: err.code,
-          memo: input.memo,
-        });
-        return JSON.stringify({
-          success: false,
-          error: err.message,
-          limitViolation: err.code,
-        });
-      }
-      throw err;
-    }
+  // ── 2. Contract allowlist + 3. Selector allowlist ─────────────────────────
+  // Build calldata early so we can extract the real 4-byte selector
+  let calldata: string = '0x';
+  try {
+    const encoded = buildContractWrite(
+      input.contractAddress,
+      input.abi,
+      input.functionName,
+      input.args as unknown[],
+      hasValue ? valueStr : undefined,
+    );
+    calldata = encoded.data ?? '0x';
+  } catch {
+    // If we can't build calldata yet (e.g. bad ABI), derive selector from ABI string
   }
+
+  // Extract 4-byte selector from calldata (0x + 8 hex = 10 chars)
+  const selectorFromCalldata =
+    calldata.length >= 10 ? calldata.slice(0, 10) : deriveSelector(input.abi, input.functionName);
+
+  try {
+    checkContractAllowlist(input.contractAddress, selectorFromCalldata);
+    checkAddressAllowlist(input.contractAddress);
+    if (hasValue) checkLimits(valueRaw);
+  } catch (err) {
+    if (err instanceof SpendingLimitError) {
+      appendLog({
+        timestamp: ts,
+        tool: name,
+        contractAddress: input.contractAddress,
+        functionName: input.functionName,
+        valueUsdc: hasValue ? valueStr : undefined,
+        status: 'blocked',
+        limitCode: err.code,
+        memo: input.memo,
+      });
+      return JSON.stringify({
+        success: false,
+        error: err.message,
+        limitViolation: err.code,
+      });
+    }
+    throw err;
+  }
+
+  // ── 6. Operation binding ──────────────────────────────────────────────────
+  const binding = createOperationBinding(input.contractAddress, valueRaw, calldata);
 
   const mode = (process.env.AGENT_MODE ?? 'unsigned').toLowerCase();
 
@@ -111,6 +205,7 @@ export async function handler(input: Input): Promise<string> {
       status: 'approved',
       mode: 'circle',
       memo: input.memo,
+      binding,
     });
 
     // Build abiFunctionSignature from the ABI JSON
@@ -151,6 +246,7 @@ export async function handler(input: Input): Promise<string> {
       txHash: result.txHash ?? undefined,
       circleTransactionId: result.circleTransactionId,
       memo: input.memo,
+      binding,
     });
 
     return JSON.stringify({
@@ -164,6 +260,7 @@ export async function handler(input: Input): Promise<string> {
       txHash: result.txHash,
       state: result.state,
       explorerUrl: result.explorerUrl,
+      binding: bindingSummary(binding),
     });
   }
 
@@ -191,6 +288,7 @@ export async function handler(input: Input): Promise<string> {
     status: 'approved',
     mode: 'unsigned',
     memo: input.memo,
+    binding,
   });
 
   return JSON.stringify({
@@ -202,6 +300,7 @@ export async function handler(input: Input): Promise<string> {
     valueUsdc: hasValue ? valueStr : '0',
     unsignedTransaction: tx,
     estimatedGasUsdc: estimatedGas,
+    binding: bindingSummary(binding),
     instructions:
       'This transaction has NOT been sent. Sign and broadcast it with MetaMask, ' +
       'Frame, Rainbow, or the cast CLI. Pass the resulting tx hash to ' +

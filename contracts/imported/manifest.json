@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "files": {
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol": {
+      "sha256": "41a3040398d53999dea3251ff8906e11ec1a699362a1d8f4a55bfc7709cc00f3",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/interfaces/IERC1967.sol": {
+      "sha256": "c4e901318ab6d4963582c62c62ce988a34c68dbae71846b67decacde79e9a317",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Utils.sol": {
+      "sha256": "a89ba2032ab25959c6fde1e508ebf8f966ff632703d3ef79684f578a8fa8033f",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/proxy/Proxy.sol": {
+      "sha256": "fa8aae37b2939371fcbce48b814c0d5c7e57e3e267f348459f29941937746c98",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/proxy/beacon/IBeacon.sol": {
+      "sha256": "c1c9726bbb0ec4c540c7c98059dcded69a8586b46c168036672381033ee76239",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/utils/Address.sol": {
+      "sha256": "73e54e15285455f0e01e136c3663732641537614723ae5dbd820eb3cb036b1fd",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/utils/Errors.sol": {
+      "sha256": "0704b9d6c032cca8512a3bc3f30f49f86f1f03102d2896a3d23e794b82efea66",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/utils/LowLevelCall.sol": {
+      "sha256": "e128cbe9c6c406d5a42c26e4079c0a95b369ce552f2d0c3dfd2fcb836c5708f2",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0x0747eef0706327138c69792bf28cd525089e4583/lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol": {
+      "sha256": "75704538dcb223239280c6726d9a31cf769a7816718517c997fc7d63bdb70778",
+      "address": "0x0747eef0706327138c69792bf28cd525089e4583",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:28.341Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/src/AgenticCommerce.sol": {
+      "sha256": "a16ae3290855910a4c06a59fa691d1d2b56b534e744f15b6f73a6a06ccb1bec4",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts-upgradeable/contracts/access/AccessControlUpgradeable.sol": {
+      "sha256": "b6fcfbabb4fb0f0b23b018ed667a5302adcda512ce635c52b50ee2704609fdb7",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol": {
+      "sha256": "a8b2a4ade9afe90f8e5026906c69911489389f2a892c5e4fe3de5cb918869251",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol": {
+      "sha256": "18fd32f4ee1c70a19b089839935db44400e59c4724b7e02e430defd1eb670eb5",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Utils.sol": {
+      "sha256": "a89ba2032ab25959c6fde1e508ebf8f966ff632703d3ef79684f578a8fa8033f",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/proxy/beacon/IBeacon.sol": {
+      "sha256": "c1c9726bbb0ec4c540c7c98059dcded69a8586b46c168036672381033ee76239",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol": {
+      "sha256": "f527a063813c2bf60c153fb08e38539578935402894fcc36fac42324ca325d3b",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/proxy/utils/UUPSUpgradeable.sol": {
+      "sha256": "b5af3bfd79a32c6da2d09b0be38d9b63dcd0d159a1a4a0198431fd00acc1fd52",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts-upgradeable/contracts/utils/ContextUpgradeable.sol": {
+      "sha256": "caf06b4c93bbc1d54eb772e76e949bd4a2520c535cc591d07e57cbafaf90b2fd",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts-upgradeable/contracts/utils/introspection/ERC165Upgradeable.sol": {
+      "sha256": "73882072b1bd2744526f0ea1456ae0a53ae867d971ddf744d46b4a7c3c8eee57",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/access/IAccessControl.sol": {
+      "sha256": "140304b7e99d517c57a13f391dfd3b550ca633a507f7b2af130f391b6cd89cc5",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol": {
+      "sha256": "9c3a75a925a6dac9e88b03cddc58d42fe3131b0aaaad84408521f3f7af2f991b",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol": {
+      "sha256": "dfb3f56fa928a7c6cae41a7ce2c86b9210fa18d33fa26389099d66a0fa790368",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/interfaces/IERC1967.sol": {
+      "sha256": "c4e901318ab6d4963582c62c62ce988a34c68dbae71846b67decacde79e9a317",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol": {
+      "sha256": "0158e2d3e0e28bedd99eec13dcf1a8aa3a70a5b7e4bb2ad709609c95fcc740d1",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/interfaces/draft-IERC1822.sol": {
+      "sha256": "73653312bc2eda0ec231553a5295242eaef2d4f46a023532d45fe76cbd0f565f",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+      "sha256": "01b6f5c4fa45fd38822b286ecef6daf983d27306dd6362496fa71b3e4600b72c",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol": {
+      "sha256": "c2394cb2a327f234711da34884947f4aa0f6dd2791d1d6303a0c7acfaf81bca3",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/Address.sol": {
+      "sha256": "73e54e15285455f0e01e136c3663732641537614723ae5dbd820eb3cb036b1fd",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/Errors.sol": {
+      "sha256": "0704b9d6c032cca8512a3bc3f30f49f86f1f03102d2896a3d23e794b82efea66",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/LowLevelCall.sol": {
+      "sha256": "e128cbe9c6c406d5a42c26e4079c0a95b369ce552f2d0c3dfd2fcb836c5708f2",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/ReentrancyGuardTransient.sol": {
+      "sha256": "cff7c20aed945d939b764d876adbd42e1b7725d62d5b1f2bd303db237567b575",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/StorageSlot.sol": {
+      "sha256": "75704538dcb223239280c6726d9a31cf769a7816718517c997fc7d63bdb70778",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/TransientSlot.sol": {
+      "sha256": "ea92f361d697ba8b1fbd322b4d84b989998862c21fbebfa4b45289dc94a9eea2",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol": {
+      "sha256": "b42cd10397f404b8383363f646c21d59ff4decc7bca3de8c5b84773806605e14",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+      "sha256": "9055c2994b37dea1a41b7b7926dcb510f05dbe2540b0aafc5fbee9558fffd0ca",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    },
+    "/home/user/app/contracts/imported/0xa316fd02827242d537f84730f8a37d0ba5fd351a/src/interfaces/IACPHook.sol": {
+      "sha256": "32933b295ce891dc69a4591f650f1dde0d16315dcdd01520a10652e36025eab7",
+      "address": "0xa316fd02827242d537f84730f8a37d0ba5fd351a",
+      "chain": "Arc_Testnet",
+      "fetchedAt": "2026-10-20T15:24:53.266Z"
+    }
+  }
+}
